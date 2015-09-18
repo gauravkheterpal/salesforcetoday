@@ -12,22 +12,34 @@
 	<dict>
 		<key>A4A7B585569B18CCB891C41CEF249BF17B61EC4F</key>
 		<string>https://bitbucket.org/bhavna24/todayextension.git</string>
+		<key>ED23073435AF4108D390013BAF57FC259F783EE6</key>
+		<string>https://github.com/gauravkheterpal/salesforcetoday.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>SalesforceToday/SalesforceToday.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>A4A7B585569B18CCB891C41CEF249BF17B61EC4F</key>
+		<string>../../../../todayextension</string>
+		<key>ED23073435AF4108D390013BAF57FC259F783EE6</key>
 		<string>../../..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://bitbucket.org/bhavna24/todayextension.git</string>
+	<string>https://github.com/gauravkheterpal/salesforcetoday.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>A4A7B585569B18CCB891C41CEF249BF17B61EC4F</string>
+	<string>ED23073435AF4108D390013BAF57FC259F783EE6</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>ED23073435AF4108D390013BAF57FC259F783EE6</string>
+			<key>IDESourceControlWCCName</key>
+			<string>salesforcetoday</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

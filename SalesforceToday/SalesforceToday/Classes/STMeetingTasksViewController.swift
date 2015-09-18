@@ -35,15 +35,22 @@ class STMeetingTasksViewController: UITableViewController {
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44.0
         
-        allTasks = STTaskStorage.getSFTasks()!
-        
+        if(STTaskStorage.getSFTasks() != nil) {
+            allTasks = STTaskStorage.getSFTasks()!
+        }
         if (allTasks.count > 0) {
             for item in allTasks { // loop through all Tasks
                 let obj = item as NSDictionary
-                let type = obj.objectForKey("Type") as! String
-                if type == "Meeting"
-                {
-                    meetingTasks.append(obj)
+                if obj !=  NSNull() {
+                    
+                    if let type = obj["Type"] as? String {
+                        
+                        if type == "Meeting"
+                        {
+                            meetingTasks.append(obj)
+                        }
+                    }
+                    
                 }
             }
         }

@@ -15,6 +15,10 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
         
         super.init()
 
+        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
+        sharedUserDefaults!.setObject("NO", forKey: "Authentication")
+        sharedUserDefaults!.synchronize()
+
         // Set Salesforce SDK log level
         SFLogger.setLogLevel(SFLogLevelDebug)
 
@@ -60,6 +64,10 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
                 let navigationViewController = UIStoryboard(name: "Main", bundle: nil)
                     .instantiateViewControllerWithIdentifier("NavigationView") as! UIViewController
                 self.window!.rootViewController = navigationViewController
+                
+                let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
+                sharedUserDefaults!.setObject("YES", forKey: "Authentication")
+                sharedUserDefaults!.synchronize()
             },
             failure: {
                 // "failure" closure
@@ -81,6 +89,10 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
         if !STTaskStorage.saveSFTasks(nil) {
             NSLog("AppDelegate.authManagerDidLogout: failed to remove tasks.")
         }
+        
+        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
+        sharedUserDefaults!.setObject("NO", forKey: "Authentication")
+        sharedUserDefaults!.synchronize()
         // Start login process
         login()
     }

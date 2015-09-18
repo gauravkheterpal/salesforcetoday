@@ -15,6 +15,7 @@ let STAppSuiteName = "group.metacube.mobile.salesforcetoday"
 // It represents the key for saving tasks in NSUserDefaults.
 let STNSUserDefaultsTasksKey = "Tasks"
 
+
 /*!
  This is the utility class to persist tasks and share among apps in the same app group.
 

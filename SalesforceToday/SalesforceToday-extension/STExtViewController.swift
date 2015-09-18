@@ -62,7 +62,6 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
         
         tableView.backgroundColor = UIColor.clearColor()
         
-        
         // Get tasks
         self.tasks = STTaskStorage.getSFTasks()
         // Set preferred height
@@ -113,22 +112,40 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     */
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
-        if !(tasks != nil) {
+        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
+        if let authenticationStr = sharedUserDefaults!.objectForKey("Authentication") as? NSString {
+            
+            if authenticationStr == "YES" && !(self.tasks != nil) {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
+                cell.textLabel!.textColor = UIColor.whiteColor()
+                cell.textLabel!.text = "No outstanding tasks :)"
+                return cell
+                
+            }else if authenticationStr == "YES" && self.tasks != nil && !self.tasks!.isEmpty {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier(STExtTodayViewCellId) as! STExtTaskCell
+                let task = self.tasks![indexPath.row]
+                cell.dueDate.text = task.objectForKey("ActivityDate") as? String
+                cell.type.text = task.objectForKey("Type") as? String
+                cell.subject.text = task.objectForKey("Subject") as? String
+                return cell
+            }else {
+                
+                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
+                cell.textLabel!.textColor = UIColor.whiteColor()
+                cell.textLabel!.text = "Tap to login to Salesforce."
+                cell.backgroundColor = UIColor.clearColor()
+                return cell
+            }
+            
+        }else {
             let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
+            cell.textLabel!.textColor = UIColor.whiteColor()
             cell.textLabel!.text = "Tap to login to Salesforce."
             cell.backgroundColor = UIColor.clearColor()
             return cell
-        } else if self.tasks!.isEmpty {
-            let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-            cell.textLabel!.text = "No outstanding tasks :)"
-            return cell
-        } else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(STExtTodayViewCellId) as! STExtTaskCell
-            let task = self.tasks![indexPath.row]
-            cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-            cell.type.text = task.objectForKey("Type") as? String
-            cell.subject.text = task.objectForKey("Subject") as? String
-            return cell
+            
         }
     }
     
@@ -151,6 +168,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     */
     override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // Launch the main app.
+        tableView.deselectRowAtIndexPath(indexPath, animated: false)
         let url = NSURL(string:"sftasks://SalesforceToday")
         extensionContext!.openURL(url!, completionHandler: nil)
     }
