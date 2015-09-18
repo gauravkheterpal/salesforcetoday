@@ -41,9 +41,9 @@ class STOtherTasksViewController: UITableViewController {
                 let obj = item as NSDictionary
                 if obj !=  NSNull() {
                     
-                    if let type = obj["Other"] as? String {
+                    if let type = obj["Type"] as? String {
                         
-                        if type == "Meeting"
+                        if type == "Other"
                         {
                             otherTasks.append(obj)
                         }
