@@ -18,39 +18,54 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     var callTasks : [NSDictionary] = []
     var allTasks : [NSDictionary] = []
     
+     let indicator:UIActivityIndicatorView = UIActivityIndicatorView  (activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Activity Indicator
         
+        indicator.color = UIColor .black
+        indicator.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        indicator.center = self.view.center
+        self.view.addSubview(indicator)
+        indicator.bringSubview(toFront: self.view)
+        }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        callTasks = []
+        allTasks = []
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44.0
-        
+       
         // Send REST API request to Salesforce to query tasks of current user
-        let request = SFRestAPI.sharedInstance().requestForQuery(
-            "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
-                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId)' ORDER BY ActivityDate")
+        let request = SFRestAPI.sharedInstance().request(
+            forQuery: "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
+                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId!)' ORDER BY ActivityDate limit 10")
+
         SFRestAPI.sharedInstance().send(request, delegate: self)
+        indicator.startAnimating()
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.navigationItem.title = "Call Tasks"
-    }
+            }
     
     /*!
     This delegate is called when a request has finished loading.
     @param request -> the request
     @param jsonResponse -> the response
     */
-    func request(request : SFRestRequest, didLoadResponse jsonResponse : AnyObject) {
+    func request(_ request : SFRestRequest, didLoadResponse jsonResponse : AnyObject) {
         // Extract records
-        var response = jsonResponse.objectForKey("records") as! [NSDictionary];
+        let response = jsonResponse.object(forKey: "records") as! [NSDictionary];
 
         for item in response { // loop through all Tasks
             let obj = item as NSDictionary
             
             if obj !=  NSNull() {
                 
-                if let type = obj["Type"] as? String {
+                if (obj["Type"] as? String) != nil {
                     
                     allTasks.append(obj)
                 }
@@ -75,13 +90,14 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
                                 callTasks.append(obj)
                             }
                         }
-                   
                 }
             }
         }
         
         // Reload table data
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
             self.tableView.reloadData()
             
         }
@@ -92,10 +108,10 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param request -> the request
     @param error -> the error
     */
-    func request(request : SFRestRequest, didFailLoadWithError error : NSError) {
+    func request(_ request : SFRestRequest, didFailLoadWithError error : NSError) {
         NSLog("STCallTasksViewController.request:didFailLoadWithError: REST API request failed: %@", error);
         
-        SFAuthenticationManager.sharedManager().logout()
+        SFAuthenticationManager.shared().logout()
         
     }
     
@@ -103,20 +119,18 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     This delegate is called when a request has be cancelled.
     @param request -> the request
     */
-    func requestDidCancelLoad(request : SFRestRequest) {
+    func requestDidCancelLoad(_ request : SFRestRequest) {
         NSLog("STCallTasksViewController.requestDidCancelLoad: REST API request cancelled: %@", request);
-        SFAuthenticationManager.sharedManager().logout()
-        
+        SFAuthenticationManager.shared().logout()
     }
     
     /*!
     This delegate is called when a request has timed out.
     @param request -> the request
     */
-    func requestDidTimeout(request : SFRestRequest) {
+    func requestDidTimeout(_ request : SFRestRequest) {
         NSLog("STCallTasksViewController.requestDidTimeout: REST API request timeout: %@", request);
-        SFAuthenticationManager.sharedManager().logout()
-        
+        SFAuthenticationManager.shared().logout()
     }
     
     /*!
@@ -124,7 +138,7 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param tableView -> the table view
     @return the number of sections, always 1
     */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
@@ -134,7 +148,7 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param section -> the section index
     @return the number of rows
     */
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return callTasks.count
     }
     
@@ -144,29 +158,36 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param indexPath -> the index path
     @return the cell
     */
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier(STCallTaskTableViewCellId) as! STTaskListCell
-        let task = self.callTasks[indexPath.row]
-        cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-        cell.priority.text = task.objectForKey("Priority") as? String
-        cell.subject.text = task.objectForKey("Subject") as? String
-        cell.status.text = task.objectForKey("Status") as? String
+        let cell = tableView.dequeueReusableCell(withIdentifier: STCallTaskTableViewCellId) as! STTaskListCell
+        let task = self.callTasks[(indexPath as NSIndexPath).row]
+        cell.dueDate.text = task.object(forKey: "ActivityDate") as? String
+        cell.priority.text = task.object(forKey: "Priority") as? String
+        cell.subject.text = task.object(forKey: "Subject") as? String
+        cell.status.text = task.object(forKey: "Status") as? String
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
         
-        var task = self.callTasks[indexPath.row]
-        var taskID = task.objectForKey("Id") as! String
-        print(taskID)
-        var url = NSURL(string:"salesforce1://sObject/\(taskID)/view")
-        UIApplication.sharedApplication().openURL(url!)
+        let task = self.callTasks[(indexPath as NSIndexPath).row]
+        let taskID = task.object(forKey: "Id") as! String
+        print(taskID, terminator: "")
+        let url = URL(string:"salesforce1://sObject/\(taskID)/view")
+        print(url!)
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url!, options: [:], completionHandler: nil)
+        } else {
+            // Fallback on earlier versions
+        }
+//        UIApplication.shared().openURL(url!)
     }
     
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var  headerCell = tableView.dequeueReusableCellWithIdentifier("CallSectionHeader") as! UITableViewCell
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let cellIdentifier = "CallSectionHeader"
+        let  headerCell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier)
         
         return headerCell
     }

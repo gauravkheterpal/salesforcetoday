@@ -14,6 +14,8 @@ import NotificationCenter
 // This is the UIViewController for showing the Salesforce tasks in Today view.
 
 
+@available(iOS 10.0, *)
+@available(iOSApplicationExtension 10.0, *)
 class STExtViewController: UITableViewController, NCWidgetProviding {
     
     // It represents the today view cell ID in the storyboard.
@@ -49,7 +51,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
             
         } else if tasks != nil && !tasks!.isEmpty {
             
-            return CGFloat(STExtTaskCellHeight * tasks!.count)
+            return CGFloat(STExtTaskCellHeight * tasks!.count) + 50
             
         } else {
             
@@ -60,25 +62,53 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.backgroundColor = UIColor.clearColor()
-        
+        tableView.backgroundColor = UIColor.clear
         // Get tasks
         self.tasks = STTaskStorage.getSFTasks()
         // Set preferred height
-        var preferredSize = preferredContentSize
-        preferredSize.height = self.preferredViewHeight
-        preferredContentSize = preferredSize
         
+        if #available(iOSApplicationExtension 10.0, *) {
+            if #available(iOS 10.0, *) {
+                self.extensionContext?.widgetLargestAvailableDisplayMode = NCWidgetDisplayMode.expanded
+            } else {
+                // Fallback on earlier versions
+            }
+        } else {
+            var preferredSize = preferredContentSize
+            preferredSize.height = self.preferredViewHeight
+            preferredContentSize = preferredSize
+            self.tableView.contentInset = UIEdgeInsetsMake(0, 15, 0, 0);
+        };
+
         // Reload data
         self.tableView.reloadData()
+        
+    }
+    
+    @available(iOS 10.0, *)
+    @available(iOSApplicationExtension 10.0, *)
+    func widgetActiveDisplayModeDidChange(_ activeDisplayMode: NCWidgetDisplayMode, withMaximumSize maxSize: CGSize) {
+        if #available(iOSApplicationExtension 10.0, *) {
+            if #available(iOS 10.0, *) {
+                if (activeDisplayMode == NCWidgetDisplayMode.expanded) {
+                    self.preferredContentSize = CGSize(width: 0, height: 200)
+                } else if (activeDisplayMode == NCWidgetDisplayMode.compact) {
+                    self.preferredContentSize = maxSize;
+                }
+            } else {
+                // Fallback on earlier versions
+            }
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     /*!
     This is called to give a widget an opportunity to update its contents.
     @param completionHandler -> the completion handler
     */
-    func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)!) {
-        completionHandler(NCUpdateResult.NewData)
+    func widgetPerformUpdate(completionHandler: ((NCUpdateResult) -> Void)) {
+        completionHandler(NCUpdateResult.newData)
     }
     
     /*!
@@ -86,7 +116,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param tableView -> the table view
     @return the number of sections, always 1
     */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
@@ -96,7 +126,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param section -> the section index
     @return the number of rows
     */
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tasks != nil && !tasks!.isEmpty {
             return tasks!.count > STExtMaxTasksInTodayView ? STExtMaxTasksInTodayView : tasks!.count
         } else {
@@ -110,40 +140,43 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param indexPath -> the index path
     @return the cell
     */
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
-        if let authenticationStr = sharedUserDefaults!.objectForKey("Authentication") as? NSString {
+        let sharedUserDefaults = UserDefaults(suiteName: STAppSuiteName)
+        if let authenticationStr = sharedUserDefaults!.object(forKey: "Authentication") as? NSString {
             
             if authenticationStr == "YES" && !(self.tasks != nil) {
-                
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-                cell.textLabel!.textColor = UIColor.whiteColor()
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId, for: indexPath)
+                cell.textLabel!.textColor = UIColor.black
                 cell.textLabel!.text = "No outstanding tasks :)"
                 return cell
                 
             }else if authenticationStr == "YES" && self.tasks != nil && !self.tasks!.isEmpty {
                 
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtTodayViewCellId) as! STExtTaskCell
-                let task = self.tasks![indexPath.row]
-                cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-                cell.type.text = task.objectForKey("Type") as? String
-                cell.subject.text = task.objectForKey("Subject") as? String
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtTodayViewCellId) as! STExtTaskCell
+                
+                let task = self.tasks![(indexPath as NSIndexPath).row]
+                
+                cell.dueDate.textColor = UIColor.black
+                cell.dueDate.text = task.object(forKey: "ActivityDate") as? String
+                cell.type.textColor = UIColor.black
+                cell.type.text = task.object(forKey: "Type") as? String
+                cell.subject.textColor = UIColor.black
+                cell.subject.text = task.object(forKey: "Subject") as? String
                 return cell
             }else {
-                
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-                cell.textLabel!.textColor = UIColor.whiteColor()
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId, for: indexPath)
+                cell.textLabel!.textColor = UIColor.black
                 cell.textLabel!.text = "Tap to login to Salesforce."
-                cell.backgroundColor = UIColor.clearColor()
+                cell.backgroundColor = UIColor.clear
                 return cell
             }
             
         }else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-            cell.textLabel!.textColor = UIColor.whiteColor()
+            let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId, for: indexPath)
+            cell.textLabel!.textColor = UIColor.black
             cell.textLabel!.text = "Tap to login to Salesforce."
-            cell.backgroundColor = UIColor.clearColor()
+            cell.backgroundColor = UIColor.clear
             return cell
             
         }
@@ -156,8 +189,8 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param cell -> the cell
     @param indexPath the index path
     */
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        cell.layer.backgroundColor = UIColor.clearColor().CGColor
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.layer.backgroundColor = UIColor.clear.cgColor
     }
     
     /*!
@@ -166,10 +199,10 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param tableView -> the tableView
     @param indexPath -> the index path
     */
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
-        let url = NSURL(string:"sftasks://SalesforceToday")
-        extensionContext!.openURL(url!, completionHandler: nil)
+        tableView.deselectRow(at: indexPath, animated: false)
+        let url = URL(string:"sftasks://SalesforceToday")
+        extensionContext!.open(url!, completionHandler: nil)
     }
 }

@@ -25,12 +25,26 @@ class STEmailTasksViewController: UITableViewController {
     */
     var allTasks : [NSDictionary] = []
     
+    let indicator:UIActivityIndicatorView = UIActivityIndicatorView  (activityIndicatorStyle: UIActivityIndicatorViewStyle.gray)
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        indicator.color = UIColor .black
+        indicator.frame = CGRect(x: 0, y: 0, width: 10, height: 10)
+        indicator.center = self.view.center
+        self.view.addSubview(indicator)
+        indicator.bringSubview(toFront: self.view)
+
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        emailTasks = []
+        allTasks = []
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44.0
-        
+                indicator.startAnimating()
+
         if(STTaskStorage.getSFTasks() != nil) {
             allTasks = STTaskStorage.getSFTasks()!
         }
@@ -46,20 +60,23 @@ class STEmailTasksViewController: UITableViewController {
                         {
                             emailTasks.append(obj)
                         }
-                    
+                        
                     }
                 }
             }
         }
         
         // Reload table data
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async {
+            self.indicator.stopAnimating()
+            self.indicator.hidesWhenStopped = true
             self.tableView.reloadData()
         }
         
+
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.navigationItem.title = "Email Tasks"
     }
@@ -75,7 +92,7 @@ class STEmailTasksViewController: UITableViewController {
     @param tableView -> the table view
     @return the number of sections, always 1
     */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
@@ -85,7 +102,7 @@ class STEmailTasksViewController: UITableViewController {
     @param section -> the section index
     @return the number of rows
     */
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return emailTasks.count
     }
     
@@ -95,29 +112,33 @@ class STEmailTasksViewController: UITableViewController {
     @param indexPath -> the index path
     @return the cell
     */
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell = tableView.dequeueReusableCellWithIdentifier(STEmailTaskTableViewCellId) as! STTaskListCell
-        let task = self.emailTasks[indexPath.row]
-        cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-        cell.priority.text = task.objectForKey("Priority") as? String
-        cell.subject.text = task.objectForKey("Subject") as? String
-        cell.status.text = task.objectForKey("Status") as? String
+        let cell = tableView.dequeueReusableCell(withIdentifier: STEmailTaskTableViewCellId) as! STTaskListCell
+        let task = self.emailTasks[(indexPath as NSIndexPath).row]
+        cell.dueDate.text = task.object(forKey: "ActivityDate") as? String
+        cell.priority.text = task.object(forKey: "Priority") as? String
+        cell.subject.text = task.object(forKey: "Subject") as? String
+        cell.status.text = task.object(forKey: "Status") as? String
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
         
-        var task = self.emailTasks[indexPath.row]
-        var taskID = task.objectForKey("Id") as! String
-        print(taskID)
-        var url = NSURL(string:"salesforce1://sObject/\(taskID)/view")
-        UIApplication.sharedApplication().openURL(url!)
+        let task = self.emailTasks[(indexPath as NSIndexPath).row]
+        let taskID = task.object(forKey: "Id") as! String
+        print(taskID, terminator: "")
+        let url = URL(string:"salesforce1://sObject/\(taskID)/view")
+        if #available(iOS 10.0, *) {
+            UIApplication.shared.open(url!, options: [ : ], completionHandler: nil)
+        } else {
+            // Fallback on earlier versions
+        }
     }
 
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var  headerCell = tableView.dequeueReusableCellWithIdentifier("EmailSectionHeader") as! UITableViewCell
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let  headerCell = tableView.dequeueReusableCell(withIdentifier: "EmailSectionHeader")
         
         return headerCell
     }

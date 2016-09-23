@@ -25,9 +25,9 @@ class STRootViewController: UITabBarController {
     This action is called when user taps "Logout" bar button item to logout user.
     @param sender -> the event sender
     */
-    @IBAction func logout(sender: AnyObject) {
+    @IBAction func logout(_ sender: AnyObject) {
         // Call SFAuthenticationManager to logout user
-        SFAuthenticationManager.sharedManager().logout()
+        SFAuthenticationManager.shared().logout()
     }
 
 }

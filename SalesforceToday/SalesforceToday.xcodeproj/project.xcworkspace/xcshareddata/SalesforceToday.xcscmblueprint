@@ -1,0 +1,37 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "9DC64408D3F0A28B1F8CFA18C61E7F88E47D05A7",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "9DC64408D3F0A28B1F8CFA18C61E7F88E47D05A7" : 0,
+    "A4A7B585569B18CCB891C41CEF249BF17B61EC4F" : 0,
+    "ED23073435AF4108D390013BAF57FC259F783EE6" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "695ED2E3-9DBD-4927-A0E2-25E3C10EA5BB",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "9DC64408D3F0A28B1F8CFA18C61E7F88E47D05A7" : "salesforcetoday_VS10\/",
+    "A4A7B585569B18CCB891C41CEF249BF17B61EC4F" : "todayextension",
+    "ED23073435AF4108D390013BAF57FC259F783EE6" : "salesforcetoday"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SalesforceToday",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SalesforceToday\/SalesforceToday.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/PoojaJangid\/salesforcetoday.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "9DC64408D3F0A28B1F8CFA18C61E7F88E47D05A7"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/bitbucket.org\/bhavna24\/todayextension.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "A4A7B585569B18CCB891C41CEF249BF17B61EC4F"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/gauravkheterpal\/salesforcetoday.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "ED23073435AF4108D390013BAF57FC259F783EE6"
+    }
+  ]
+}

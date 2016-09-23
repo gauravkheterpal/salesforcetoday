@@ -21,11 +21,11 @@ class STExtTaskCell : UITableViewCell {
     // This function is called to prepare the cell.
 
     override func prepareForReuse() {
-        dueDate.text = ""
-        dueDate.textColor = UIColor.whiteColor()
-        subject.text = ""
-        subject.textColor = UIColor.whiteColor()
-        type.text = ""
-        type.textColor = UIColor.whiteColor()
+        dueDate.text = "";
+        dueDate.textColor = UIColor.black;
+        subject.text = "";
+        subject.textColor = UIColor.black;
+        type.text = "";
+        type.textColor = UIColor.black;
     }
 }
