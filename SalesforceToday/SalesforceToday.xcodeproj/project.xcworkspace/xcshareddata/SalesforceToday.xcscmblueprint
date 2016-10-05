@@ -12,7 +12,7 @@
   "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
     "9DC64408D3F0A28B1F8CFA18C61E7F88E47D05A7" : "salesforcetoday_VS10\/",
     "A4A7B585569B18CCB891C41CEF249BF17B61EC4F" : "todayextension",
-    "ED23073435AF4108D390013BAF57FC259F783EE6" : "salesforcetoday"
+    "ED23073435AF4108D390013BAF57FC259F783EE6" : "salesforcetoday\/"
   },
   "DVTSourceControlWorkspaceBlueprintNameKey" : "SalesforceToday",
   "DVTSourceControlWorkspaceBlueprintVersion" : 204,

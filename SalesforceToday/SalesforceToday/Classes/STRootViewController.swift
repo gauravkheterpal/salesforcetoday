@@ -21,6 +21,7 @@ class STRootViewController: UITabBarController {
         // Dispose of any resources that can be recreated.
     }
     
+    
     /*!
     This action is called when user taps "Logout" bar button item to logout user.
     @param sender -> the event sender

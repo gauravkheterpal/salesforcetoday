@@ -8,7 +8,7 @@
 
 import UIKit
 
-class STOtherTasksViewController: UITableViewController {
+class STOtherTasksViewController: UITableViewController, SFRestDelegate {
 
     /*!
     This constant represents the table view cell ID in the storyboard.
@@ -38,20 +38,67 @@ class STOtherTasksViewController: UITableViewController {
     }
     
     override func viewDidAppear(_ animated: Bool) {
+        showTasks()
+    }
+    
+    func showTasks() {
         otherTasks = []
         allTasks = []
         self.tableView.rowHeight = UITableViewAutomaticDimension
         self.tableView.estimatedRowHeight = 44.0
+        // Send REST API request to Salesforce to query tasks of current user
+        let request = SFRestAPI.sharedInstance().request(
+            forQuery: "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
+                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId!)' ORDER BY ActivityDate limit 10")
         
+        SFRestAPI.sharedInstance().send(request, delegate: self)
         indicator.startAnimating()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        self.tabBarController?.navigationItem.title = "Other Tasks"
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.refresh, target: self, action: #selector(STOtherTasksViewController.showTasks))
+        self.tabBarController?.navigationItem.leftBarButtonItem = refreshButton
+    }
 
-        if(STTaskStorage.getSFTasks() != nil) {
-            allTasks = STTaskStorage.getSFTasks()!
+    
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+ 
+    /*!
+     This delegate is called when a request has finished loading.
+     @param request -> the request
+     @param jsonResponse -> the response
+     */
+    func request(_ request : SFRestRequest, didLoadResponse jsonResponse : AnyObject) {
+        // Extract records
+        let response = jsonResponse.object(forKey: "records") as! [NSDictionary];
+        
+        for item in response { // loop through all Tasks
+            let obj = item as NSDictionary
+            
+            if obj !=  NSNull() {
+                
+                if (obj["Type"] as? String) != nil {
+                    
+                    allTasks.append(obj)
+                }
+                
+            }
         }
         
-        if (allTasks.count > 0) {
+        
+        if allTasks.isEmpty == false {
+            
+            //save tasks
+            STTaskStorage.saveSFTasks(allTasks)
             for item in allTasks { // loop through all Tasks
                 let obj = item as NSDictionary
+                
                 if obj !=  NSNull() {
                     
                     if let type = obj["Type"] as? String {
@@ -61,7 +108,6 @@ class STOtherTasksViewController: UITableViewController {
                             otherTasks.append(obj)
                         }
                     }
-                    
                 }
             }
         }
@@ -71,20 +117,41 @@ class STOtherTasksViewController: UITableViewController {
             self.indicator.stopAnimating()
             self.indicator.hidesWhenStopped = true
             self.tableView.reloadData()
+            
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.tabBarController?.navigationItem.title = "Other Tasks"
+    /*!
+     This delegate is called when a request has failed due to an error.
+     @param request -> the request
+     @param error -> the error
+     */
+    func request(_ request : SFRestRequest, didFailLoadWithError error : NSError) {
+        NSLog("STCallTasksViewController.request:didFailLoadWithError: REST API request failed: %@", error);
+        
+        SFAuthenticationManager.shared().logout()
+        
     }
+    
+    /*!
+     This delegate is called when a request has be cancelled.
+     @param request -> the request
+     */
+    func requestDidCancelLoad(_ request : SFRestRequest) {
+        NSLog("STCallTasksViewController.requestDidCancelLoad: REST API request cancelled: %@", request);
+        SFAuthenticationManager.shared().logout()
+    }
+    
+    /*!
+     This delegate is called when a request has timed out.
+     @param request -> the request
+     */
+    func requestDidTimeout(_ request : SFRestRequest) {
+        NSLog("STCallTasksViewController.requestDidTimeout: REST API request timeout: %@", request);
+        SFAuthenticationManager.shared().logout()
+    }
+    
 
-    
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
-    }
-    
     /*!
     Returns the number of sections in the table view.
     @param tableView -> the table view

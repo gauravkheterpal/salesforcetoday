@@ -31,25 +31,31 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
         indicator.bringSubview(toFront: self.view)
         }
     
+        
     override func viewDidAppear(_ animated: Bool) {
-        callTasks = []
-        allTasks = []
-        self.tableView.rowHeight = UITableViewAutomaticDimension
-        self.tableView.estimatedRowHeight = 44.0
-       
-        // Send REST API request to Salesforce to query tasks of current user
-        let request = SFRestAPI.sharedInstance().request(
-            forQuery: "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
-                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId!)' ORDER BY ActivityDate limit 10")
-
-        SFRestAPI.sharedInstance().send(request, delegate: self)
-        indicator.startAnimating()
+        showTasks()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.navigationItem.title = "Call Tasks"
-            }
+        let refreshButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonSystemItem.refresh, target: self, action: #selector(STCallTasksViewController.showTasks))
+        self.tabBarController?.navigationItem.leftBarButtonItem = refreshButton
+    }
+    
+    func showTasks() {
+        callTasks = []
+        allTasks = []
+        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.estimatedRowHeight = 44.0
+        
+        // Send REST API request to Salesforce to query tasks of current user
+        let request = SFRestAPI.sharedInstance().request(
+            forQuery: "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
+                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId!)' ORDER BY ActivityDate limit 10")
+        SFRestAPI.sharedInstance().send(request, delegate: self)
+        indicator.startAnimating()
+    }
     
     /*!
     This delegate is called when a request has finished loading.
@@ -72,7 +78,6 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
                 
             }
         }
-        
 
         if allTasks.isEmpty == false {
         
