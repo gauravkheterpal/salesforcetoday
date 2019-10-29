@@ -22,10 +22,10 @@ class STExtTaskCell : UITableViewCell {
 
     override func prepareForReuse() {
         dueDate.text = ""
-        dueDate.textColor = UIColor.whiteColor()
+        dueDate.textColor = UIColor.white
         subject.text = ""
-        subject.textColor = UIColor.whiteColor()
+        subject.textColor = UIColor.white
         type.text = ""
-        type.textColor = UIColor.whiteColor()
+        type.textColor = UIColor.white
     }
 }

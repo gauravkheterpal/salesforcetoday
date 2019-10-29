@@ -27,16 +27,16 @@ final class STTaskStorage {
      @return true if saved successfully, false otherwise
      */
     class func saveSFTasks(sftasks : [NSDictionary]?) -> Bool {
-        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
+        let sharedUserDefaults = UserDefaults(suiteName: STAppSuiteName)
         if (sftasks != nil) {
         
-            var array = NSMutableArray()
+            let array = NSMutableArray()
             for task in sftasks! {
-                array.addObject((NSKeyedArchiver.archivedDataWithRootObject(task)))
+                array.add((NSKeyedArchiver.archivedData(withRootObject: task)))
             }
-            sharedUserDefaults!.setObject(array, forKey: STNSUserDefaultsTasksKey)
+            sharedUserDefaults!.set(array, forKey: STNSUserDefaultsTasksKey)
         } else {
-            sharedUserDefaults!.removeObjectForKey(STNSUserDefaultsTasksKey)
+            sharedUserDefaults!.removeObject(forKey: STNSUserDefaultsTasksKey)
         }
         return sharedUserDefaults!.synchronize()
     }
@@ -46,11 +46,12 @@ final class STTaskStorage {
      @return the salesforce tasks. nil if no tasks are present.
     */
     class func getSFTasks() -> [NSDictionary]? {
-        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
-        if let array = sharedUserDefaults!.objectForKey(STNSUserDefaultsTasksKey) as? NSMutableArray {
+        let sharedUserDefaults = UserDefaults(suiteName: STAppSuiteName)
+        if let array = sharedUserDefaults!.object(forKey: STNSUserDefaultsTasksKey) as? NSMutableArray {
             var sftasks : [NSDictionary] = []
-            for data : AnyObject in array {
-                sftasks.append(NSKeyedUnarchiver.unarchiveObjectWithData(data as! NSData) as! NSDictionary)
+            for data in array {
+                guard let data = data as? Data else {continue}
+                sftasks.append(NSKeyedUnarchiver.unarchiveObject(with: data) as! NSDictionary)
             }
             return sftasks
         } else {

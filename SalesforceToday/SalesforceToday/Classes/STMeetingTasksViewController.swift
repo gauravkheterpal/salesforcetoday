@@ -32,7 +32,7 @@ class STMeetingTasksViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        self.tableView.rowHeight = UITableViewAutomaticDimension
+        self.tableView.rowHeight = UITableView.automaticDimension
         self.tableView.estimatedRowHeight = 44.0
         
         if(STTaskStorage.getSFTasks() != nil) {
@@ -56,13 +56,13 @@ class STMeetingTasksViewController: UITableViewController {
         }
         
         // Reload table data
-        dispatch_async(dispatch_get_main_queue()) {
+        DispatchQueue.main.async{
             self.tableView.reloadData()
         }
        
     }
     
-    override func viewWillAppear(animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         self.tabBarController?.navigationItem.title = "Meeting Tasks"
     }
@@ -77,7 +77,7 @@ class STMeetingTasksViewController: UITableViewController {
     @param tableView -> the table view
     @return the number of sections, always 1
     */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
@@ -87,7 +87,7 @@ class STMeetingTasksViewController: UITableViewController {
     @param section -> the section index
     @return the number of rows
     */
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return meetingTasks.count
     }
     
@@ -97,31 +97,29 @@ class STMeetingTasksViewController: UITableViewController {
     @param indexPath -> the index path
     @return the cell
     */
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        var cell = tableView.dequeueReusableCellWithIdentifier(STMeetingTaskTableViewCellId) as! STTaskListCell
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        var cell = tableView.dequeueReusableCell(withIdentifier: STMeetingTaskTableViewCellId) as! STTaskListCell
         let task = self.meetingTasks[indexPath.row]
-        cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-        cell.priority.text = task.objectForKey("Priority") as? String
-        cell.subject.text = task.objectForKey("Subject") as? String
-        cell.status.text = task.objectForKey("Status") as? String
+        cell.dueDate.text = task.object(forKey: "ActivityDate") as? String
+        cell.priority.text = task.object(forKey: "Priority") as? String
+        cell.subject.text = task.object(forKey: "Subject") as? String
+        cell.status.text = task.object(forKey: "Status") as? String
         return cell
     }
     
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
         
         var task = self.meetingTasks[indexPath.row]
-        var taskID = task.objectForKey("Id") as! String
+        var taskID = task.object(forKey: "Id") as! String
         print(taskID)
         var url = NSURL(string:"salesforce1://sObject/\(taskID)/view")
-        UIApplication.sharedApplication().openURL(url!)
+        UIApplication.shared.openURL(url! as URL)
     }
-
-    override func tableView(tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        var  headerCell = tableView.dequeueReusableCellWithIdentifier("MeetingSectionHeader") as! UITableViewCell
+    
+    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        var  headerCell = tableView.dequeueReusableCell(withIdentifier: "MeetingSectionHeader") as! UITableViewCell
         
         return headerCell
     }
-    
 }

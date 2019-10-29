@@ -24,12 +24,12 @@ class STTaskListCell : UITableViewCell {
 
     override func prepareForReuse() {
         dueDate.text = ""
-        dueDate.backgroundColor = UIColor.clearColor()
+        dueDate.backgroundColor = UIColor.clear
         subject.text = ""
-        subject.backgroundColor = UIColor.clearColor()
+        subject.backgroundColor = UIColor.clear
         priority.text = ""
-        priority.backgroundColor = UIColor.clearColor()
+        priority.backgroundColor = UIColor.clear
         status.text = ""
-        status.backgroundColor = UIColor.clearColor()
+        status.backgroundColor = UIColor.clear
     }
 }

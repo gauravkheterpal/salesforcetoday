@@ -60,7 +60,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        tableView.backgroundColor = UIColor.clearColor()
+        tableView.backgroundColor = UIColor.clear
         
         // Get tasks
         self.tasks = STTaskStorage.getSFTasks()
@@ -78,7 +78,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param completionHandler -> the completion handler
     */
     func widgetPerformUpdateWithCompletionHandler(completionHandler: ((NCUpdateResult) -> Void)!) {
-        completionHandler(NCUpdateResult.NewData)
+        completionHandler(NCUpdateResult.newData)
     }
     
     /*!
@@ -86,7 +86,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param tableView -> the table view
     @return the number of sections, always 1
     */
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1
     }
     
@@ -96,7 +96,7 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     @param section -> the section index
     @return the number of rows
     */
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if tasks != nil && !tasks!.isEmpty {
             return tasks!.count > STExtMaxTasksInTodayView ? STExtMaxTasksInTodayView : tasks!.count
         } else {
@@ -105,71 +105,70 @@ class STExtViewController: UITableViewController, NCWidgetProviding {
     }
     
     /*!
-    Returns a cell to insert in a particular location of the table view.
-    @param tableView -> the table view
-    @param indexPath -> the index path
-    @return the cell
-    */
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        
-        let sharedUserDefaults = NSUserDefaults(suiteName: STAppSuiteName)
-        if let authenticationStr = sharedUserDefaults!.objectForKey("Authentication") as? NSString {
+     Returns a cell to insert in a particular location of the table view.
+     @param tableView -> the table view
+     @param indexPath -> the index path
+     @return the cell
+     */
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let sharedUserDefaults = UserDefaults(suiteName: STAppSuiteName)
+        if let authenticationStr = sharedUserDefaults!.object(forKey: "Authentication") as? NSString {
             
             if authenticationStr == "YES" && !(self.tasks != nil) {
                 
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-                cell.textLabel!.textColor = UIColor.whiteColor()
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId) as! UITableViewCell
+                cell.textLabel!.textColor = UIColor.white
                 cell.textLabel!.text = "No outstanding tasks :)"
                 return cell
                 
             }else if authenticationStr == "YES" && self.tasks != nil && !self.tasks!.isEmpty {
                 
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtTodayViewCellId) as! STExtTaskCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtTodayViewCellId) as! STExtTaskCell
                 let task = self.tasks![indexPath.row]
-                cell.dueDate.text = task.objectForKey("ActivityDate") as? String
-                cell.type.text = task.objectForKey("Type") as? String
-                cell.subject.text = task.objectForKey("Subject") as? String
+                cell.dueDate.text = task.object(forKey: "ActivityDate") as? String
+                cell.type.text = task.object(forKey: "Type") as? String
+                cell.subject.text = task.object(forKey: "Subject") as? String
                 return cell
             }else {
                 
-                let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-                cell.textLabel!.textColor = UIColor.whiteColor()
+                let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId) as! UITableViewCell
+                cell.textLabel!.textColor = UIColor.white
                 cell.textLabel!.text = "Tap to login to Salesforce."
-                cell.backgroundColor = UIColor.clearColor()
+                cell.backgroundColor = UIColor.clear
                 return cell
             }
             
         }else {
-            let cell = tableView.dequeueReusableCellWithIdentifier(STExtMessageCellId) as! UITableViewCell
-            cell.textLabel!.textColor = UIColor.whiteColor()
+            let cell = tableView.dequeueReusableCell(withIdentifier: STExtMessageCellId) as! UITableViewCell
+            cell.textLabel!.textColor = UIColor.white
             cell.textLabel!.text = "Tap to login to Salesforce."
-            cell.backgroundColor = UIColor.clearColor()
+            cell.backgroundColor = UIColor.clear
             return cell
             
         }
     }
     
     /*!
-    This is called when table view is about to draw a cell for a particular row.
-    This is overriden to set background color.
-    @param tableView -> the table view
-    @param cell -> the cell
-    @param indexPath the index path
-    */
-    override func tableView(tableView: UITableView, willDisplayCell cell: UITableViewCell, forRowAtIndexPath indexPath: NSIndexPath) {
-        cell.layer.backgroundColor = UIColor.clearColor().CGColor
+     This is called when table view is about to draw a cell for a particular row.
+     This is overriden to set background color.
+     @param tableView -> the table view
+     @param cell -> the cell
+     @param indexPath the index path
+     */
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.layer.backgroundColor = UIColor.clear.cgColor
     }
     
     /*!
-    This is called when the specified row is now selected.
-    This is overriden to launch the main app
-    @param tableView -> the tableView
-    @param indexPath -> the index path
-    */
-    override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+     This is called when the specified row is now selected.
+     This is overriden to launch the main app
+     @param tableView -> the tableView
+     @param indexPath -> the index path
+     */
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
-        tableView.deselectRowAtIndexPath(indexPath, animated: false)
+        tableView.deselectRow(at: indexPath as IndexPath, animated: false)
         let url = NSURL(string:"sftasks://SalesforceToday")
-        extensionContext!.openURL(url!, completionHandler: nil)
+        extensionContext!.open(url! as URL, completionHandler: nil)
     }
 }

@@ -27,7 +27,7 @@ class STRootViewController: UITabBarController {
     */
     @IBAction func logout(sender: AnyObject) {
         // Call SFAuthenticationManager to logout user
-        SFAuthenticationManager.sharedManager().logout()
+        SFAuthenticationManager.shared().logout()
     }
 
 }
