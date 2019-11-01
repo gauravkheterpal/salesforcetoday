@@ -45,6 +45,8 @@
 	<string>3MVG9ZL0ppGP5UrBly5N4WklgL49nSjf_N3vCzmWERr6XNS2a.VRZuT2sMUjSsm9jX8QbTIvDlteiElHxVd5c</string>
 	<key>SFDCOAuthLoginHost</key>
 	<string>login.salesforce.com</string>
+	<key>UILaunchStoryboardName</key>
+	<string>Launch</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
 	<key>UIRequiredDeviceCapabilities</key>

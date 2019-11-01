@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		4F3F413517E7CA5C008B3283 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4F3F413417E7CA5C008B3283 /* ImageIO.framework */; };
+		67563166236C2CA100719091 /* Launch.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 67563165236C2CA100719091 /* Launch.storyboard */; };
 		824A9DD91724E16400C9BD79 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 824A9DD81724E16400C9BD79 /* UIKit.framework */; };
 		824A9DDB1724E16400C9BD79 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 824A9DDA1724E16400C9BD79 /* Foundation.framework */; };
 		824A9DDD1724E16400C9BD79 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 824A9DDC1724E16400C9BD79 /* CoreGraphics.framework */; };
@@ -90,6 +91,7 @@
 /* Begin PBXFileReference section */
 		38DE89D3194B6A24003CC378 /* NotificationCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NotificationCenter.framework; path = System/Library/Frameworks/NotificationCenter.framework; sourceTree = SDKROOT; };
 		4F3F413417E7CA5C008B3283 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
+		67563165236C2CA100719091 /* Launch.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Launch.storyboard; path = SalesforceToday/Classes/Launch.storyboard; sourceTree = SOURCE_ROOT; };
 		824A9DD51724E16400C9BD79 /* SalesforceToday.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SalesforceToday.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		824A9DD81724E16400C9BD79 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		824A9DDA1724E16400C9BD79 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -433,6 +435,7 @@
 				BBBF9E7C1B739725002FF94A /* STRootViewController.swift */,
 				BBBF9E7D1B739725002FF94A /* STTaskListCell.swift */,
 				BBBF9E7E1B739725002FF94A /* STTaskStorage.swift */,
+				67563165236C2CA100719091 /* Launch.storyboard */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -967,6 +970,7 @@
 				BB1F7BEA1B74775F00F82BE9 /* LICENSE in Resources */,
 				BBBF9F731B73976F002FF94A /* meeting_icon@2x.png in Resources */,
 				BBBF9F771B739779002FF94A /* other_icon.png in Resources */,
+				67563166236C2CA100719091 /* Launch.storyboard in Resources */,
 				BBBF9F741B73976F002FF94A /* SalesforceSDKResources.bundle in Resources */,
 				BBBF9F6D1B73976F002FF94A /* call_icon.png in Resources */,
 				BBBF9F5A1B73974B002FF94A /* openssl_license.txt in Resources */,
@@ -1143,7 +1147,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToday/SalesforceToday.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1161,7 +1164,7 @@
 					"$(SRCROOT)/SalesforceToday/Dependencies/SalesforceSecurity/Headers",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/SalesforceToday/SalesforceToday-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1194,7 +1197,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = SalesforceToday/SalesforceToday.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
@@ -1212,7 +1214,7 @@
 					"$(SRCROOT)/SalesforceToday/Dependencies/SalesforceSecurity/Headers",
 				);
 				INFOPLIST_FILE = "$(SRCROOT)/SalesforceToday/SalesforceToday-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1266,7 +1268,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "salesforcetoday-extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.metacube.mobile.salesforcetoday.$(PRODUCT_NAME:rfc1034identifier)";
@@ -1303,7 +1305,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "salesforcetoday-extension/Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @executable_path/../../Frameworks";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.metacube.mobile.salesforcetoday.$(PRODUCT_NAME:rfc1034identifier)";
