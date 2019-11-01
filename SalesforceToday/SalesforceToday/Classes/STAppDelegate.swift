@@ -41,16 +41,13 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
      @param launchOptions -> the launch options
      @return Always true in this implementation
      */
-    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-        // Start login process
+    func applicationDidFinishLaunching(_ application: UIApplication) {
         login()
         UINavigationBar.appearance().barTintColor = UIColor(red: 46.0/255.0, green: 140.0/255.0, blue: 212.0/255.0, alpha: 1.0)
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         
         UITabBar.appearance().tintColor = UIColor(red: 46.0/255.0, green: 140.0/255.0, blue: 212.0/255.0, alpha: 1.0)
-        
-        return true
     }
     
     // Start Salesforce login process.
@@ -62,7 +59,7 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
                 (SFOAuthInfo) in
                 // switch to main view
                 let navigationViewController = UIStoryboard(name: "Main", bundle: nil)
-                    .instantiateViewController(withIdentifier: "NavigationView") as! UIViewController
+                    .instantiateViewController(withIdentifier: "NavigationView")
                 self.window!.rootViewController = navigationViewController
                 
                 let sharedUserDefaults = UserDefaults(suiteName: STAppSuiteName)

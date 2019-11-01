@@ -25,9 +25,10 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
         self.tableView.estimatedRowHeight = 44.0
         
         // Send REST API request to Salesforce to query tasks of current user
+        guard let userID = SFUserAccountManager.sharedInstance().currentUserId else { return }
         let request = SFRestAPI.sharedInstance().request(
-            forQuery: "SELECT Id, Subject, Type, ActivityDate, Priority, Status FROM Task WHERE Status != 'Completed'"
-                + " AND OwnerId = '\(SFUserAccountManager.sharedInstance().currentUserId)' ORDER BY ActivityDate")
+            forQuery: "SELECT Id, Subject, ActivityDate, Priority, Status, Type FROM Task WHERE Status != 'Completed'"
+                + " AND OwnerId = '\(userID)' ORDER BY ActivityDate")
         SFRestAPI.sharedInstance().send(request, delegate: self)
     }
     
@@ -41,41 +42,42 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param request -> the request
     @param jsonResponse -> the response
     */
-    func request(request : SFRestRequest, didLoadResponse jsonResponse : AnyObject) {
-        // Extract records
-        var res = jsonResponse.object(forKey: "records") as! [NSDictionary]
-
-        for item in res { // loop through all Tasks
-            let obj = item as NSDictionary
+    func request(_ request: SFRestRequest!, didLoadResponse dataResponse: Any!) {
+        if let response = dataResponse as? NSDictionary {
+            var res = response.object(forKey: "records") as! [NSDictionary]
             
-            if obj !=  NSNull() {
-                
-                if let type = obj["Type"] as? String {
-                    
-                    allTasks.append(obj)
-                }
-                
-            }
-        }
-        
-
-        if allTasks.isEmpty == false {
-        
-            //save tasks
-            STTaskStorage.saveSFTasks(sftasks: allTasks)
-            for item in allTasks { // loop through all Tasks
+            for item in res { // loop through all Tasks
                 let obj = item as NSDictionary
                 
-                    if obj !=  NSNull() {
+                if obj !=  NSNull() {
                     
-                        if let type = obj["Type"] as? String {
+                    if let type = obj["Type"] as? String {
                         
+                        allTasks.append(obj)
+                    }
+                    
+                }
+            }
+            
+            
+            if allTasks.isEmpty == false {
+                
+                //save tasks
+                STTaskStorage.saveSFTasks(sftasks: allTasks)
+                for item in allTasks { // loop through all Tasks
+                    let obj = item as NSDictionary
+                    
+                    if obj !=  NSNull() {
+                        
+                        if let type = obj["Type"] as? String {
+                            
                             if type == "Call"
                             {
                                 callTasks.append(obj)
                             }
                         }
-                   
+                        
+                    }
                 }
             }
         }
@@ -91,31 +93,28 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
     @param request -> the request
     @param error -> the error
     */
-    func request(request : SFRestRequest, didFailLoadWithError error : NSError) {
-        NSLog("STCallTasksViewController.request:didFailLoadWithError: REST API request failed: %@", error);
+    func request(_ request: SFRestRequest!, didFailLoadWithError error: Error!) {
+        print("STCallTasksViewController.request:didFailLoadWithError: REST API request failed:", error!)
         
         SFAuthenticationManager.shared().logout()
-        
     }
     
     /*!
     This delegate is called when a request has be cancelled.
     @param request -> the request
     */
-    func requestDidCancelLoad(request : SFRestRequest) {
-        NSLog("STCallTasksViewController.requestDidCancelLoad: REST API request cancelled: %@", request);
+    func requestDidCancelLoad(_ request: SFRestRequest!) {
+        print("STCallTasksViewController.requestDidCancelLoad: REST API request cancelled: ", request!)
         SFAuthenticationManager.shared().logout()
-        
     }
     
     /*!
     This delegate is called when a request has timed out.
     @param request -> the request
     */
-    func requestDidTimeout(request : SFRestRequest) {
-        NSLog("STCallTasksViewController.requestDidTimeout: REST API request timeout: %@", request);
+    func requestDidTimeout(_ request: SFRestRequest!) {
+        print("STCallTasksViewController.requestDidTimeout: REST API request timeout: ", request!)
         SFAuthenticationManager.shared().logout()
-        
     }
     
     /*!
