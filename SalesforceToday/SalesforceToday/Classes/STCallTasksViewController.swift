@@ -51,7 +51,7 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
                 
                 if obj !=  NSNull() {
                     
-                    if let type = obj["Type"] as? String {
+                    if (obj["Type"] as? String) != nil {
                         
                         allTasks.append(obj)
                     }
@@ -149,13 +149,14 @@ class STCallTasksViewController : UITableViewController, SFRestDelegate {
         cell.priority.text = task.object(forKey: "Priority") as? String
         cell.subject.text = task.object(forKey: "Subject") as? String
         cell.status.text = task.object(forKey: "Status") as? String
+        cell.backgroundColor = UIColor.white
         return cell
     }
     
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
-        
+        tableView.deselectRow(at: indexPath, animated: true)
         var task = self.callTasks[indexPath.row]
         var taskID = task.object(forKey: "Id") as! String
         print(taskID)

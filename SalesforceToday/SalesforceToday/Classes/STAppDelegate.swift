@@ -79,7 +79,7 @@ class STAppDelegate: UIResponder, UIApplicationDelegate, SFAuthenticationManager
      This function is called when user is logged out.
      @param manager -> the SFAuthenticationManager
      */
-    func authManagerDidLogout(manager : SFAuthenticationManager) {
+    func authManagerDidLogout(_ manager: SFAuthenticationManager!) {
         // Reset app view state to its initial state
         self.initializeAppViewState()
         // Remove Tasks

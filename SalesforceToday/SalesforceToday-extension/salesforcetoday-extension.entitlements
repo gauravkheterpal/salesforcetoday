@@ -4,11 +4,11 @@
 <dict>
 	<key>com.apple.security.application-groups</key>
 	<array>
-		<string>group.metacube.mobile.salesforcetoday</string>
+		<string>group.com.metacube.mobile.salesforcetoday-app-mtx</string>
 	</array>
 	<key>keychain-access-groups</key>
 	<array>
-		<string>$(AppIdentifierPrefix)com.metacube.mobile.salesforcetoday.salesforcetoday-extension</string>
+		<string>$(AppIdentifierPrefix)com.metacube.mobile.salesforcetoday.salesforcetoday-extension-App</string>
 	</array>
 </dict>
 </plist>

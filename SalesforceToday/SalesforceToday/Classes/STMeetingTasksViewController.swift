@@ -104,12 +104,13 @@ class STMeetingTasksViewController: UITableViewController {
         cell.priority.text = task.object(forKey: "Priority") as? String
         cell.subject.text = task.object(forKey: "Subject") as? String
         cell.status.text = task.object(forKey: "Status") as? String
+        cell.backgroundColor = UIColor.white
         return cell
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // Launch the main app.
-        
+        tableView.deselectRow(at: indexPath, animated: true)
         var task = self.meetingTasks[indexPath.row]
         var taskID = task.object(forKey: "Id") as! String
         print(taskID)

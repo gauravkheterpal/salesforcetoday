@@ -10,7 +10,7 @@ import Foundation
 
 
 // It represents the App Group name.
-let STAppSuiteName = "group.metacube.mobile.salesforcetoday"
+let STAppSuiteName = "group.com.metacube.mobile.salesforcetoday-app-mtx"
 
 // It represents the key for saving tasks in NSUserDefaults.
 let STNSUserDefaultsTasksKey = "Tasks"
